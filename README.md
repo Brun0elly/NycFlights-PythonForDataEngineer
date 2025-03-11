@@ -44,8 +44,5 @@ A função `turno_partida(df, coluna_hora, coluna_minuto)` classifica os horári
 ### Bruno Lima
 ### Daniel Lopes
 ### Gabriel Anchieta
-- 🔗 Link do GitHub do projeto:
-#### https://github.com/DanielsOfficial0102/NycFlights-PythonForDataEngineer
-
-- Print da publicação do projeto
-- Print da execução do `main.py`
+## 🔗 Link do GitHub do projeto:
+### https://github.com/DanielsOfficial0102/NycFlights-PythonForDataEngineer
