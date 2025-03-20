@@ -1,25 +1,16 @@
 import pandas as pd
 
 def tempo_voo_horas(df, coluna_tempo):
-    """
-    Converte a coluna de tempo de voo de minutos para horas.
+    df["tempo_voo_horas"] = pd.to_timedelta(df[coluna_tempo], unit='m')  # Converte minutos para timedelta
+    df["tempo_voo_horas"] = df["tempo_voo_horas"].apply(lambda x: str(x).split()[2] if len(str(x).split()) > 1 else str(x))  # Formata para HH:mm:ss
     
-    :param df: DataFrame contendo os dados.
-    :param coluna_tempo: Nome da coluna com tempo de voo em minutos.
-    :return: DataFrame com nova coluna `tempo_voo_horas`.
-    """
-    df["tempo_voo_horas"] = df[coluna_tempo] / 60
     return df
 
-def turno_partida(df, coluna_hora, coluna_minuto):
-    """
-    Classifica o horário de partida do voo em turnos (manhã, tarde, noite, madrugada).
-    
-    :param df: DataFrame contendo os dados.
-    :param coluna_hora: Nome da coluna com a hora de partida.
-    :param coluna_minuto: Nome da coluna com os minutos de partida.
-    :return: DataFrame com nova coluna `turno_partida`.
-    """
+
+def turno_partida(df, coluna_datetime):
+    # Garantir que a coluna esteja em formato datetime
+    df[coluna_datetime] = pd.to_datetime(df[coluna_datetime], errors='coerce')
+
     def classificar_turno(hora):
         if 5 <= hora < 12:
             return "Manhã"
@@ -29,6 +20,7 @@ def turno_partida(df, coluna_hora, coluna_minuto):
             return "Noite"
         else:
             return "Madrugada"
+          
+    df["turno_partida"] = df[coluna_datetime].dt.hour.apply(classificar_turno)
     
-    df["turno_partida"] = df[coluna_hora].apply(classificar_turno)
     return df

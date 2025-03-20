@@ -1,26 +1,35 @@
 import pandas as pd
+import logging
+import datetime
+import sqlite3
 from Transform import tempo_voo_horas, turno_partida
+from DataClean import data_clean
 
-# Carregar os dados do dataset
-df = pd.read_csv(
-    "https://raw.githubusercontent.com/JackyP/testing/master/datasets/nycflights.csv",
-    index_col=0
-)
+#ARQUIVO DE LOGS
+logging.basicConfig(filename='Main.log', level=logging.INFO)
+logger = logging.getLogger()
 
-# Filtrar colunas necessárias
-df = df[['year', 'month', 'day', 'hour', 'minute', 'arr_delay', 'carrier', 'flight', 'air_time', 'distance', 'origin', 'dest']]
+logger.info(f'Inicio da execucao ; {datetime.datetime.now()}')
 
-# Remover valores NaN e filtrar voos com tempo válido
+#Executa DataClean
+db_path = data_clean()
+
+conn = sqlite3.connect(db_path)
+df = pd.read_sql("SELECT * FROM DataClean", conn)
+
+# REMOVE VALORES NULL
 df = df.dropna()
-df = df[df['air_time'] > 0]
 
-# Aplicar transformações
-df = tempo_voo_horas(df, 'air_time')
-df = turno_partida(df, 'hour', 'minute')
+#CHAMA A FUNÇÃO QUE CONVERTE O TEMPO DE VOO DE MINUTOS PARA HORAS
+df = tempo_voo_horas(df, 'tempo_voo')
 
-# Exibir as primeiras linhas para conferência
-print(df.head())
+#CHAMA A FUNÇÃO QUE CLASSIFICA O PERIODO
+df = turno_partida(df, 'data_hora')
 
-# Salvar o resultado final em CSV
-df.to_csv("voos_transformados.csv", index=False)
-print("Arquivo 'voos_transformados.csv' salvo com sucesso!")
+#GRAVA O RESULTADO FINAL DA TABELA VoosTransformados do SQLITE
+df.to_sql("VoosTransformados", conn, if_exists="replace", index=False)
+df_vz = pd.read_sql("SELECT * FROM VoosTransformados", conn)
+print(df_vz)
+conn.close()
+
+logger.info(f'Fim da execucao ; {datetime.datetime.now()}')
