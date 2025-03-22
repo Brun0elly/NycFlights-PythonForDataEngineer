@@ -40,9 +40,9 @@ A função `turno_partida(df, coluna_datetime)` classifica os horários de parti
    ```
 
 ## 👥 Grupo
-### Bruno Elly
-### Bruno Lima
-### Daniel Lopes
-### Gabriel Anchieta
+### Bruno Elly Ferreira
+### Bruno Pereira Lima
+### Daniel Lopes Braga Santos
+### Gabriel Anchieta de Sales
 ## 🔗 Link do GitHub do projeto:
 ### https://github.com/DanielsOfficial0102/NycFlights-PythonForDataEngineer
